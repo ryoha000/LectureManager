@@ -1,22 +1,22 @@
-import React, { useState  } from 'react';
+import React, { useState, useContext  } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Container } from 'native-base'
-import MainViewHeader from './MainViewHeader'
+import { Text, Button, Container } from 'native-base'
 import MainViewFooter from './MainViewFooter'
-import { NavigationContainer } from '@react-navigation/native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RootStackParamList } from '../../App';
 
-const Tab = createBottomTabNavigator();
+interface Props {
+  children: React.ReactNode
+  navigation: StackNavigationProp<RootStackParamList, keyof RootStackParamList>
+  type: keyof RootStackParamList
+}
 
-export default function MainView() {
-  const [type, useType] = useState("Note")
+export default function MainView(props: Props) {
   return (
     <Container style={styles.container}>
-      {/* <View style={styles.header}>
-        <MainViewHeader title={type} />
-      </View> */}
+      {props.children}
       <View style={styles.footer}>
-        <MainViewFooter type={type} useType={useType}/>
+        <MainViewFooter type={props.type} navigation={props.navigation}/>
       </View>
     </Container>
   );

@@ -1,13 +1,24 @@
 import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, View } from "react-native";
-import MainView from "./src/MainView/MainView";
+import MainViewScreen from "./src/MainView/MainView";
+import NoteViewScreen from "./src/Note/NoteView"
+import CameraViewScreen from './src/Note/CameraView'
+import SettingViewScreen from './src/Setting/SettingView'
+import ScheduleViewScreen from './src/Schedule/ScheduleView'
 import { AppLoading } from "expo"
 import * as Font from 'expo-font'
 import { NavigationContainer } from '@react-navigation/native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createStackNavigator } from '@react-navigation/stack';
 import { Icon } from "native-base";
 
-const Tab = createBottomTabNavigator();
+export type RootStackParamList = {
+  Schedule: undefined
+  Note: {a: string};
+  Setting: {a: string};
+  Camera: undefined
+}
+
+const Stack = createStackNavigator<RootStackParamList>();
 
 export default function App() {
   const [isReady, useIsReady] = useState(false)
@@ -17,7 +28,7 @@ export default function App() {
         await _loadResourcesAsync()
         useIsReady(true)
       } catch (e) {
-        console.log(e)
+        alert(e)
       }
     }
     waitLoading()
@@ -27,27 +38,12 @@ export default function App() {
   }
   return (
     <NavigationContainer>
-      <Tab.Navigator
-      screenOptions={({ route }) => ({
-        tabBarIcon: ({ focused, color, size }) => {
-          let iconName;
-
-          if (route.name === 'Home') {
-            iconName = focused
-              ? 'ios-information-circle'
-              : 'ios-information-circle-outline';
-          } else if (route.name === 'Settings') {
-            iconName = focused ? 'ios-list-box' : 'ios-list';
-          }
-
-          // You can return any component that you like here!
-          return <Icon type="Ionicons" fontSize={size} name={iconName} color={color} />;
-        },
-      })}
-      >
-        <Tab.Screen name="Home" component={MainView} />
-        <Tab.Screen name="Settings" component={MainView} />
-      </Tab.Navigator>
+      <Stack.Navigator>
+        <Stack.Screen name="Schedule" component={ScheduleViewScreen} />
+        <Stack.Screen name="Note" component={NoteViewScreen} initialParams={{a: "note props"}}/>
+        <Stack.Screen name="Setting" component={SettingViewScreen} initialParams={{a: "setting props"}} />
+        <Stack.Screen name="Camera" component={CameraViewScreen} />
+      </Stack.Navigator>
     </NavigationContainer>
   );
 }

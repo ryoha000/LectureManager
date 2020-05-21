@@ -1,23 +1,29 @@
-import React, { Dispatch, SetStateAction } from 'react';
+import React, { Dispatch, SetStateAction, useContext } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { Container, FooterTab, Footer, Button, Icon } from 'native-base'
+import { RootStackParamList } from '../../App';
+import { StackNavigationProp } from '@react-navigation/stack';
 
 interface Props {
-  type: string
-  useType: Dispatch<SetStateAction<string>>
+  type: keyof RootStackParamList
+  navigation: StackNavigationProp<RootStackParamList, keyof RootStackParamList>
 }
 
 export default function MainViewFooter(props: Props) {
+  const transition = (type: keyof RootStackParamList) => {
+    props.navigation.push(type)
+  }
+
   return (
     <Footer style={styles.container}>
       <FooterTab>
-        <Button onPress={() => props.useType("Calendar")} style={{backgroundColor: props.type === "Calendar" ? '#000' : '' }}>
+        <Button onPress={() => transition("Schedule")} style={{backgroundColor: props.type === "Schedule" ? '#000' : '#fff' }}>
           <Icon type="Entypo" name="calendar" />
         </Button>
-        <Button onPress={() => props.useType("Note")} style={{backgroundColor: props.type === "Note" ? '#000' : '' }}>
+        <Button onPress={() => transition("Note")} style={{backgroundColor: props.type === "Note" ? '#000' : '#fff' }}>
           <Icon type="Entypo" name="open-book" />
         </Button>
-        <Button onPress={() => props.useType("Setting")} style={{backgroundColor: props.type === "Setting" ? '#000' : '' }}>
+        <Button onPress={() => transition("Setting")} style={{backgroundColor: props.type === "Setting" ? '#000' : '#fff' }}>
           <Icon type="Ionicons" name="ios-settings" />
         </Button>
       </FooterTab>
