@@ -3,6 +3,7 @@ import { Button, Fab, Icon } from 'native-base'
 
 interface Props {
   openCamera: () => void
+  openCameraRoll: () => void
 }
 
 export default function NoteFab(props: Props) {
@@ -20,7 +21,7 @@ export default function NoteFab(props: Props) {
       <Button style={{ backgroundColor: '#34A34F' }} onPress={props.openCamera} >
         <Icon type="Entypo" name="camera" />
       </Button>
-      <Button style={{ backgroundColor: '#3B5998' }}>
+      <Button style={{ backgroundColor: '#3B5998' }} onPress={props.openCameraRoll}>
         <Icon type="Foundation" name="folder-add" />
       </Button>
     </Fab>

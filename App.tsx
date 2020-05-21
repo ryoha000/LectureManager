@@ -1,21 +1,20 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, Text, View } from "react-native";
-import MainViewScreen from "./src/MainView/MainView";
 import NoteViewScreen from "./src/Note/NoteView"
 import CameraViewScreen from './src/Note/CameraView'
+import CameraRollViewScreen from './src/Note/CameraRoll'
 import SettingViewScreen from './src/Setting/SettingView'
 import ScheduleViewScreen from './src/Schedule/ScheduleView'
 import { AppLoading } from "expo"
 import * as Font from 'expo-font'
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { Icon } from "native-base";
 
 export type RootStackParamList = {
   Schedule: undefined
   Note: {a: string};
   Setting: {a: string};
   Camera: undefined
+  CameraRoll: undefined
 }
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -43,6 +42,7 @@ export default function App() {
         <Stack.Screen name="Note" component={NoteViewScreen} initialParams={{a: "note props"}}/>
         <Stack.Screen name="Setting" component={SettingViewScreen} initialParams={{a: "setting props"}} />
         <Stack.Screen name="Camera" component={CameraViewScreen} />
+        <Stack.Screen name="CameraRoll" component={CameraRollViewScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

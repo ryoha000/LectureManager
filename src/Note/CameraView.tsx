@@ -59,20 +59,19 @@ export default function SettingView() {
             backgroundColor: 'transparent',
             flexDirection: 'row',
           }}>
-
-            <Button
-              style={styles.cycle}
-              transparent
-              onPress={() => {
+          <Button
+            style={styles.cycle} transparent
+            onPress={() => {
               setType(
                 type === Camera.Constants.Type.back
                   ? Camera.Constants.Type.front
                   : Camera.Constants.Type.back
-              )}}
-            >
-              <Icon style={{fontSize: 70}} type="Entypo" name="cycle" />
-            </Button>
-            <Button style={styles.camera} transparent><Icon style={{fontSize: 100}} onPress={takePicture} type="MaterialIcons" name="camera" /></Button>
+              )
+            }}
+          >
+            <Icon style={{fontSize: 70}} type="Entypo" name="cycle" />
+          </Button>
+          <Button style={styles.camera} transparent><Icon style={{fontSize: 100}} onPress={takePicture} type="MaterialIcons" name="camera" /></Button>
         </View>
       </Camera>
     </View>

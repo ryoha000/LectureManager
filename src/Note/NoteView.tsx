@@ -24,6 +24,9 @@ export default function NoteView(props: Props) {
   const openCamera = () => {
     props.navigation.push('Camera')
   }
+  const openCameraRoll = () => {
+    props.navigation.push('CameraRoll')
+  }
   return (
     <Container>
       <MainView type={'Note'} navigation={props.navigation}>
@@ -32,7 +35,7 @@ export default function NoteView(props: Props) {
           <Text>{props.route.params.a}</Text>
           <Button onPress={() => props.navigation.push("Setting")}><Text>go setting</Text></Button>
           <Button onPress={() => props.navigation.push("Schedule")}><Text>go Schedule</Text></Button>
-          <NoteFab openCamera={openCamera} />
+          <NoteFab openCamera={openCamera} openCameraRoll={openCameraRoll} />
         </View>
       </MainView>
     </Container>
