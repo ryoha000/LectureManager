@@ -1,8 +1,5 @@
-import React, { useState, useEffect, useRef, createContext, useContext } from 'react';
-import { Text, View, StyleSheet, KeyboardAvoidingView } from 'react-native';
-import { Camera } from 'expo-camera';
-import { Button } from 'native-base'
-import * as MediaLibrary from 'expo-media-library'
+import React, { useState, createContext, Dispatch, SetStateAction } from 'react';
+import { View, KeyboardAvoidingView } from 'react-native';
 import MainView from '../MainView/MainView';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../../App';
@@ -21,27 +18,30 @@ type Props = {
   navigation: SettingNavigationProp
 }
 
+export const SelectedIndexContext = createContext<(number | Dispatch<SetStateAction<number>>)[]>([])
+
 export default function SettingView(props: Props) {
+  const [selectedIndex, useSelectedIndex] = useState(-1)
   return (
     <MainView navigation={props.navigation} type='Setting'>
-      {SettingViewContent()}
+      <SelectedIndexContext.Provider value={[selectedIndex, useSelectedIndex]}>
+        {SettingViewContent()}
+      </SelectedIndexContext.Provider>
     </MainView>
   );
 }
 
 function SettingViewContent() {
   const [isHalf, useIsHalf] = useState(false)
-  return (
-    <KeyboardAvoidingView contentContainerStyle={{ flex: 1 }} behavior={isHalf ? "position" : "null"} style={{flex: 1, width: "100%"}}>
-
-    {/* <View style={{ flex: 1, width: '100%' }}> */}
-
-      <SettingList half={[isHalf, useIsHalf]}/>
-    {/* </View> */}
+  const [isOverlay, useIsOverlay] = useState(false)
+  const [index, useIndex] = useState(-1)
+  if (isHalf) {
+    return <KeyboardAvoidingView contentContainerStyle={{ flex: 1 }} behavior={"position"} style={{flex: 1, width: "100%"}}>
+      <SettingList select={index} useSelect={useIndex} isOverlay={isOverlay} useIsOverlay={useIsOverlay} useIsHalf={useIsHalf} />
     </KeyboardAvoidingView>
+  }
+  return (<View style={{ flex: 1, width: '100%' }}>
+    <SettingList select={index} useSelect={useIndex} isOverlay={isOverlay} useIsOverlay={useIsOverlay} useIsHalf={useIsHalf} />
+  </View>
   );
 }
-
-const styles = StyleSheet.create({
-
-});

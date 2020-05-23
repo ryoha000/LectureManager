@@ -1,7 +1,9 @@
 import React from 'react';
 import { AsyncStorage } from 'react-native';
+import * as Crypto from '@trackforce/react-native-crypto'
+import { Buffer } from "buffer";
 
-type settingJson = {
+export type SettingJson = {
   password: string
   matrix: string
   year: string
@@ -34,6 +36,10 @@ type document = {
   tab_id: string
 }
 
+export const passwordBits = 2048;
+const ivBuffer = Buffer.from('random16bytesstr');
+const ivBase64 = ivBuffer.toString('base64');
+
 export async function saveData<T>(key: 'schedules' | 'setting' | 'documents', t: T) {
   try {
     await AsyncStorage.setItem(key, JSON.stringify(t))
@@ -53,4 +59,12 @@ export const getData = async (type: 'schedules' | 'setting' | 'documents') => {
   } catch (e) {
     alert(e)
   }
+}
+
+export function Encrypt(word: string, key: string) {
+  return Crypto.Aes.encrypt(word, key, ivBase64).toString()
+}
+
+export function Decrypt(word: string, key: string) {
+  return Crypto.Aes.decrypt(word, key, ivBase64).toString()
 }

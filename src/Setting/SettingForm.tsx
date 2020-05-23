@@ -1,9 +1,13 @@
-import React, { useState, useEffect, useRef, createContext } from 'react';
-import { View, StyleSheet, KeyboardAvoidingView, TextInputChangeEventData, NativeSyntheticEvent, TextInputFocusEventData } from 'react-native';
+import React, { useState, useEffect, useRef, createContext, useContext } from 'react';
+import { View, StyleSheet, KeyboardAvoidingView, TextInputChangeEventData, NativeSyntheticEvent, TextInputFocusEventData, LayoutChangeEvent } from 'react-native';
 import { Text, Textarea, Label, Input, Form, Item, Button, Icon } from 'native-base'
+import { PlusButton, MinusButton, ConfirmButton } from "./SettingButton"
+import { ScrollView } from 'react-native-gesture-handler'
+import { SelectedIndexContext } from './SettingView'
 
-interface Props {
+export interface Props {
   title: string
+  index: number
   inputs: {
     label: string;
     value: string;
@@ -15,11 +19,12 @@ interface Props {
     index: number;
   }[][]>>
   plus: boolean
-  half: [boolean, React.Dispatch<React.SetStateAction<boolean>>]
+  useIsHalf: React.Dispatch<React.SetStateAction<boolean>>
   count: number
 }
 
 export default function SettingForm(props: Props) {
+  const value = useContext(SelectedIndexContext)
   const onChangeText = (text: string, index: number) => {
     const newState = props.inputs.map((vA, iA) =>
       vA.map((v, i) => {
@@ -31,52 +36,35 @@ export default function SettingForm(props: Props) {
     ))
     props.useInputs(newState)
   }
-  const inputRefs = Array(props.count).map(_ => useRef(null))
-  const onFocus = (index: number) => {
-    if (inputRefs[index]) {
-      inputRefs[index].current
+  const onFocus = (row: number, index: number) => {
+    if (typeof value[1] === "function") {
+      value[1](index)
+    }
+    if (row > 3) {
+      props.useIsHalf(true)
+    } else {
+      props.useIsHalf(false)
     }
   }
-  return <View style={styles.container}>
-    <Text style={{fontSize: 24, marginBottom: 24, marginTop: 8}}>{props.title}</Text>
-    <Form style={styles.container}>
-      {props.inputs.map((vA, iA) =>
-        <View style={{flexDirection: 'row', width: "100%", flexWrap: 'wrap'}} key={iA}>
-          {vA.map((v, i, arr) => 
-            <Item stackedLabel key={i} style={arr.length > 4 ? styles.Matrix : arr.length > 1 ? styles.MD : styles.item}>
-              <Label>{v.label}</Label>
-              <Input ref={inputRefs[v.index]} onFocus={() => onFocus(v.index)} onChangeText={(text) => onChangeText(text, i)} />
-            </Item>)}
-          {MinusButton(props, iA)}
-        </View>
-      )}
-    </Form>
-    {PlusButton(props)}
-    <Button style={{marginTop: 24}}><Text>Confirm</Text></Button>
-  </View>
-}
-
-function PlusButton(props: Props) {
-  const onPress = () => {
-    props.useInputs([
-      ...props.inputs,
-      props.inputs[props.inputs.length - 1].map((v, i, arr) => ({label: v.label, value: '', index: v.index + arr.length}))
-    ])
-  }
-  if (props.plus) {
-    return <Button onPress={onPress} transparent><Icon type="AntDesign" name="pluscircle"/></Button>
-  }
-  return <View />
-}
-
-function MinusButton(props: Props, index: number) {
-  const onPress = () => {
-    props.useInputs(props.inputs.filter((v, i) => i !== index))
-  }
-  if (props.plus && index !== 0) {
-    return <Button onPress={onPress} style={{ marginTop: 24, bottom: 0}} transparent><Icon type="AntDesign" name="minuscircle"/></Button>
-  }
-  return <Button transparent><Icon style={{color: "white"}} type="AntDesign" name="minuscircle"/></Button>
+  return <ScrollView style={{height: "100%", flex: 1}}>
+    <View style={styles.container}>
+      <Text style={{fontSize: 24, marginBottom: 24, marginTop: 8}}>{props.title}</Text>
+      <Form style={styles.container}>
+        {props.inputs.map((vA, iA) =>
+          <View style={{flexDirection: 'row', width: "100%", flexWrap: 'wrap'}} key={iA}>
+            {vA.map((v, i, arr) =>
+              <Item stackedLabel key={v.index} style={arr.length > 4 ? styles.Matrix : arr.length > 1 ? styles.MD : styles.item}>
+                <Label>{v.label}</Label>
+                <Input onFocus={() => onFocus(iA, v.index)} autoFocus={v.index === value[0]} onChangeText={(text) => onChangeText(text, i)} secureTextEntry={v.label.length > 5} />
+              </Item>)}
+            {MinusButton(props, iA)}
+          </View>
+        )}
+      </Form>
+      {PlusButton(props)}
+      {ConfirmButton(props)}
+    </View>
+  </ScrollView>
 }
 
 const styles = StyleSheet.create({

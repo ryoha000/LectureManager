@@ -1,8 +1,9 @@
-import React, { useState  } from 'react';
+import React, { useState, useContext  } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Container, List, ListItem, Text } from 'native-base'
 import SettingOverlay from './SettingOverlay'
-import { TouchableOpacity, TouchableWithoutFeedback } from 'react-native-gesture-handler';
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
+import { SelectedIndexContext } from './SettingView'
 
 const items = [
   '年度区分を変更する',
@@ -13,25 +14,30 @@ const items = [
 ]
 
 interface Props {
-  half: [boolean, React.Dispatch<React.SetStateAction<boolean>>]
+  useIsHalf: React.Dispatch<React.SetStateAction<boolean>>
+  isOverlay: boolean
+  useIsOverlay: React.Dispatch<React.SetStateAction<boolean>>
+  select: number
+  useSelect: React.Dispatch<React.SetStateAction<number>>
 }
 
 export default function SettingList(props: Props) {
-  const [isOverlay, useIsOverlay] = useState(false)
-  const [select, useSelect] = useState({title: '', index: -1})
-  const openOverlay = (title: string, i: number) => {
-    useIsOverlay(true)
-    useSelect({title: title, index: i})
+  const value = useContext(SelectedIndexContext)
+  const openOverlay = (i: number) => {
+    props.useIsOverlay(true)
+    props.useSelect(i)
+    if (typeof value[1] === "function") {
+      value[1](-1)
+    }
   }
   return (
     <View style={styles.container}>
-      <TouchableList isOverlay={isOverlay} useIsOverlay={useIsOverlay}>
-
+      <TouchableList isOverlay={props.isOverlay} useIsOverlay={props.useIsOverlay}>
         <List style={{height: '100%'}}>
-          {items.map((element, i) => <ListItem key={i} onPress={() => openOverlay(element, i)}><Text>{element}</Text></ListItem>)}
+          {items.map((element, i) => <ListItem key={i} onPress={() => openOverlay(i)}><Text>{element}</Text></ListItem>)}
         </List>
       </TouchableList>
-      <SettingOverlay half={props.half} isOverlay={isOverlay} selectedItem={select} />
+      <SettingOverlay useIsHalf={props.useIsHalf} isOverlay={props.isOverlay} selectedIndex={props.select} />
     </View>
   );
 }
