@@ -1,12 +1,13 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import { Text, Textarea, Label, Input, Form, Item } from 'native-base'
 import SettingInput from './SettingInput'
 
 interface Props {
   isOverlay: boolean
   selectedIndex: number
   useIsHalf: React.Dispatch<React.SetStateAction<boolean>>
+  focusIndex: number
+  useFocusIndex: React.Dispatch<React.SetStateAction<number>>
 }
 
 export default function SettingOverlay(props: Props) {
@@ -16,7 +17,7 @@ export default function SettingOverlay(props: Props) {
   return (
     <View style={styles.container}>
       <View style={{width: '100%', height: "100%", alignItems: 'stretch', margin: "auto"}}>
-        <SettingInput useIsHalf={props.useIsHalf} selectedIndex={props.selectedIndex} />
+        <SettingInput useIsHalf={props.useIsHalf} selectedIndex={props.selectedIndex} focusIndex={props.focusIndex} useFocusIndex={props.useFocusIndex} />
       </View>
     </View>
   );

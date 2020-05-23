@@ -30,10 +30,10 @@ export function MinusButton(props: Props, index: number) {
 }
 
 export function ConfirmButton(props: Props) {
-  const onPress = () => {
-    confirm(props.index, props.inputs)
+  const onPress = async () => {
+    await confirm(props.index, props.inputs)
   }
-  return <Button onPress={onPress} style={{marginTop: 24}}><Text>Confirm</Text></Button>
+  return <Button onPress={async() => await onPress()} style={{marginTop: 24}}><Text>Confirm</Text></Button>
 }
 
 const styles = StyleSheet.create({

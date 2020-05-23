@@ -3,7 +3,6 @@ import { View, StyleSheet, KeyboardAvoidingView, TextInputChangeEventData, Nativ
 import { Text, Textarea, Label, Input, Form, Item, Button, Icon } from 'native-base'
 import { PlusButton, MinusButton, ConfirmButton } from "./SettingButton"
 import { ScrollView } from 'react-native-gesture-handler'
-import { SelectedIndexContext } from './SettingView'
 
 export interface Props {
   title: string
@@ -21,10 +20,11 @@ export interface Props {
   plus: boolean
   useIsHalf: React.Dispatch<React.SetStateAction<boolean>>
   count: number
+  focusIndex: number
+  useFocusIndex: React.Dispatch<React.SetStateAction<number>>
 }
 
 export default function SettingForm(props: Props) {
-  const value = useContext(SelectedIndexContext)
   const onChangeText = (text: string, index: number) => {
     const newState = props.inputs.map((vA, iA) =>
       vA.map((v, i) => {
@@ -37,9 +37,7 @@ export default function SettingForm(props: Props) {
     props.useInputs(newState)
   }
   const onFocus = (row: number, index: number) => {
-    if (typeof value[1] === "function") {
-      value[1](index)
-    }
+    props.useFocusIndex(index)
     if (row > 3) {
       props.useIsHalf(true)
     } else {
@@ -55,7 +53,7 @@ export default function SettingForm(props: Props) {
             {vA.map((v, i, arr) =>
               <Item stackedLabel key={v.index} style={arr.length > 4 ? styles.Matrix : arr.length > 1 ? styles.MD : styles.item}>
                 <Label>{v.label}</Label>
-                <Input onFocus={() => onFocus(iA, v.index)} autoFocus={v.index === value[0]} onChangeText={(text) => onChangeText(text, i)} secureTextEntry={v.label.length > 5} />
+                <Input onFocus={() => onFocus(iA, v.index)} autoFocus={v.index === props.focusIndex} onChangeText={(text) => onChangeText(text, i)} secureTextEntry={v.label.length > 5} />
               </Item>)}
             {MinusButton(props, iA)}
           </View>

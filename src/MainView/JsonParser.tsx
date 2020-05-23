@@ -1,7 +1,6 @@
 import React from 'react';
 import { AsyncStorage } from 'react-native';
-import * as Crypto from '@trackforce/react-native-crypto'
-import { Buffer } from "buffer";
+import axios from 'axios'
 
 export type SettingJson = {
   password: string
@@ -36,10 +35,6 @@ type document = {
   tab_id: string
 }
 
-export const passwordBits = 2048;
-const ivBuffer = Buffer.from('random16bytesstr');
-const ivBase64 = ivBuffer.toString('base64');
-
 export async function saveData<T>(key: 'schedules' | 'setting' | 'documents', t: T) {
   try {
     await AsyncStorage.setItem(key, JSON.stringify(t))
@@ -61,10 +56,28 @@ export const getData = async (type: 'schedules' | 'setting' | 'documents') => {
   }
 }
 
-export function Encrypt(word: string, key: string) {
-  return Crypto.Aes.encrypt(word, key, ivBase64).toString()
+const encryptURL = "https://us-central1-crypto-278103.cloudfunctions.net/Encrypt"
+const decryptURL = "https://us-central1-crypto-278103.cloudfunctions.net/Decrypt"
+
+export async function Encrypt(word: string, key: string): Promise<string> {
+  try {
+    const res = await axios.post(encryptURL, { word: word, key: key })
+    alert(res.data)
+    return res.data
+  } catch (e) {
+    alert(e)
+    return word
+  }
 }
 
-export function Decrypt(word: string, key: string) {
-  return Crypto.Aes.decrypt(word, key, ivBase64).toString()
+export async function Decrypt(word: string, key: string) {
+  try {
+    const res = await axios.post(decryptURL, { word: word, key: key })
+    alert(res.data)
+    return res.data
+  } catch (e) {
+    alert(e)
+    alert(word)
+    return word
+  }
 }

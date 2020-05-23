@@ -7,6 +7,8 @@ import { createMatrix, createInput } from './SettingFunctions'
 interface Props {
   selectedIndex: number
   useIsHalf: React.Dispatch<React.SetStateAction<boolean>>
+  focusIndex: number
+  useFocusIndex: React.Dispatch<React.SetStateAction<number>>
 }
 
 export interface InputType {
@@ -51,5 +53,15 @@ export default function SettingInput(props: Props) {
     }
     return
   }, [])
-  return <SettingForm index={index} count={count} useIsHalf={props.useIsHalf} title={title} inputs={inputs} useInputs={useInputs} plus={inputs.length > 7 ? false : plus} />
+  return <SettingForm 
+    index={index}
+    count={count}
+    useIsHalf={props.useIsHalf}
+    title={title}
+    inputs={inputs}
+    useInputs={useInputs}
+    plus={inputs.length > 7 ? false : plus}
+    focusIndex={props.focusIndex}
+    useFocusIndex={props.useFocusIndex}
+  />
 }

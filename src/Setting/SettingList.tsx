@@ -3,7 +3,6 @@ import { StyleSheet, View } from 'react-native';
 import { Container, List, ListItem, Text } from 'native-base'
 import SettingOverlay from './SettingOverlay'
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
-import { SelectedIndexContext } from './SettingView'
 
 const items = [
   '年度区分を変更する',
@@ -19,16 +18,15 @@ interface Props {
   useIsOverlay: React.Dispatch<React.SetStateAction<boolean>>
   select: number
   useSelect: React.Dispatch<React.SetStateAction<number>>
+  focusIndex: number
+  useFocusIndex: React.Dispatch<React.SetStateAction<number>>
 }
 
 export default function SettingList(props: Props) {
-  const value = useContext(SelectedIndexContext)
   const openOverlay = (i: number) => {
     props.useIsOverlay(true)
     props.useSelect(i)
-    if (typeof value[1] === "function") {
-      value[1](-1)
-    }
+    props.useFocusIndex(-1)
   }
   return (
     <View style={styles.container}>
@@ -37,7 +35,7 @@ export default function SettingList(props: Props) {
           {items.map((element, i) => <ListItem key={i} onPress={() => openOverlay(i)}><Text>{element}</Text></ListItem>)}
         </List>
       </TouchableList>
-      <SettingOverlay useIsHalf={props.useIsHalf} isOverlay={props.isOverlay} selectedIndex={props.select} />
+      <SettingOverlay useIsHalf={props.useIsHalf} isOverlay={props.isOverlay} selectedIndex={props.select} focusIndex={props.focusIndex} useFocusIndex={props.useFocusIndex} />
     </View>
   );
 }
